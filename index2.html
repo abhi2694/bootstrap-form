@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Two</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="style2.css">
+</head>
+
+<body>
+    <div class="registration-form">
+        <form id="formoid" method="post">
+            <h3 class="text-center">Create your job profile</h3>
+            
+            <div class="form-group">
+                <input class="form-control item" type="text" name="name" required="" maxlength="25" minlength="1" pattern="^[a-zA-Z ]*$" id="name" placeholder="Name">
+            </div>
+
+            <div class="form-group">
+                <input class="form-control item" type="email" name="email" required="" id="email" placeholder="Email">
+            </div>
+            <div class="form-group">
+                <input class="form-control item" type="text" name="username" required="" maxlength="15" minlength="4" pattern="^[a-zA-Z0-9_.-]*$" id="username" placeholder="Username">
+            </div>
+            <div class="form-group">
+                <input class="form-control item" type="password" name="password" required="" minlength="6" id="password" placeholder="Password">
+            </div>
+            <div class="form-group">
+            <div id="holder" style="width:100px; height:100px; border: 5px solid #ccc; color: #A2A4A9; font-size:18px; text-align:center;"> Upload your resume</div>
+            <br/>
+            <input type="file"><input id="fileDragName" placeholder="File Name">&nbsp;<input id="fileDragSize" placeholder="File Size">
+            
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary btn-block create-account" type="submit">Create Profile</button>
+            </div>
+            
+        </form>
+		<a href="index.html"> <button class="btn btn-primary btn-block create-accountt">Previous Form</button></a>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script>
+
+function readfiles(files) {
+  for (var i = 0; i < files.length; i++) {
+    document.getElementById('fileDragName').value = files[i].name
+    document.getElementById('fileDragSize').value = files[i].size
+    reader = new FileReader();
+    reader.onload = function(event) {
+      document.getElementById('fileDragData').value = event.target.result;}
+    reader.readAsDataURL(files[i]);
+  }
+}
+var holder = document.getElementById('holder');
+holder.ondragover = function () { this.className = 'hover'; return false; };
+holder.ondragend = function () { this.className = ''; return false; };
+holder.ondrop = function (e) {
+  this.className = '';
+  e.preventDefault();
+  readfiles(e.dataTransfer.files);
+}
+
+
+    </script>
+</body>
+
+</html>
