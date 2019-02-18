@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form One</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="style1.css">
+</head>
+
+<body>
+    <div class="registration-form">
+        <form id="formoid" method="post">
+            <h3 class="text-center">Create your account</h3>
+            
+            <div class="form-group">
+                <input class="form-control item" type="text" name="name" required="" maxlength="25" minlength="1" pattern="^[a-zA-Z ]*$" id="name" placeholder="Name">
+            </div>
+            <div class="form-group">
+                <input class="form-control item" type="text" name="college" required="" minlength="1" pattern="^[a-zA-Z ]*$" id="college" placeholder="College">
+            </div>
+            <div class="form-group">
+                <select class="form-control item" name="course" placeholder="Course">
+                        <option value="btech">Course</option>
+                    <option value="btech">B.Tech/B.E</option>
+                    <option value="barch">B.Arch</option>
+                    <option value="ba">B.A</option>
+                    <option value="bcom">B.Com</option>
+                    <option value="bsc">B.Sc</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <input class="form-control item" type="text" name="year" required="" maxlength="4" minlength="1" pattern="^[0-9]*$" id="year" placeholder="Year of Graduation">
+            </div>
+            <div class="form-group">
+                <input class="form-control item" type="email" name="email" required="" id="email" placeholder="Email">
+            </div>
+            <div class="form-group">
+                <input class="form-control item" type="text" name="username" required="" maxlength="15" minlength="4" pattern="^[a-zA-Z0-9_.-]*$" id="username" placeholder="Username">
+            </div>
+            <div class="form-group">
+                <input class="form-control item" type="password" name="password" required="" minlength="6" id="password" placeholder="Password">
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary btn-block create-account" type="submit">Create Account</button>
+            </div>
+            
+        </form>
+		<a href="index2.html"> <button class="btn btn-primary btn-block create-accountt">Next Form</button></a>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script>
+
+session_start();
+if(isset($_POST)){
+  	if (empty($_POST['name'])) {
+		$_SESSION['errors'][‘name'] = ‘Name is missing’;
+            }
+    if (empty($_POST['college'])) {
+		$_SESSION['errors'][‘college'] = ‘College is missing’;
+            }
+    if (empty($_POST['year'])) {
+		$_SESSION['errors'][‘year'] = ‘Year is missing’;
+        	}
+	if (empty($_POST[‘email’])) {
+		$_SESSION['errors'][‘email'] = ‘Email is missing’;
+            }
+    if (empty($_POST[‘username’])) {
+		$_SESSION['errors'][‘username'] = ‘Username is missing’;
+            }
+    if (empty($_POST[‘password’])) {
+		$_SESSION['errors'][‘password'] = ‘Password is missing’;
+        	}
+ 
+        if(count($_SESSION['errors']) > 0){
+	    //This is for ajax requests:
+            if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&  strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                echo json_encode($_SESSION['errors']);
+                exit;
+             }
+	    //This is when Javascript is turned off:
+           echo “<ul>”;
+           foreach($_SESSION['errors'] as $key => $value){
+	      echo “<li>” . $value . “</li>”;
+           }
+           echo “</ul>”;exit;
+    }else{
+	//form validation successful - process data here!!!!
+   }
+}
+
+var data = {};
+$(document).ready(function() {
+  $('input[type="submit"]').on('click', function() {
+      resetErrors();
+      var url = 'process.php';
+      $.each($('form input, form select'), function(i, v) {
+          if (v.type !== 'submit') {
+              data[v.name] = v.value;
+          }
+      }); //end each
+      $.ajax({
+          dataType: 'json',
+          type: 'POST',
+          url: url,
+          data: data,
+          success: function(resp) {
+              if (resp === true) {
+                  	//successful validation
+                      $('form').submit();
+                  	return false;
+              } else {
+                  $.each(resp, function(i, v) {
+	        console.log(i + " => " + v); // view in console for error messages
+                      var msg = '<label class="error" for="'+i+'">'+v+'</label>';
+                      $('input[name="' + i + '"], select[name="' + i + '"]').addClass('inputTxtError').after(msg);
+                  });
+                  var keys = Object.keys(resp);
+                  $('input[name="'+keys[0]+'"]').focus();
+              }
+              return false;
+          },
+          error: function() {
+              console.log('there was a problem checking the fields');
+          }
+      });
+      return false;
+  });
+});
+function resetErrors() {
+    $('form input, form select').removeClass('inputTxtError');
+    $('label.error').remove();
+}
+    </script>
+</body>
+
+</html>
